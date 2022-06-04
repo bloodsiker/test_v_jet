@@ -24,10 +24,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('/user/companies',  ['middleware' => 'auth:api', 'uses' => 'UserController@getCompanies']);
     $router->post('/user/companies',  ['middleware' => 'auth:api', 'uses' => 'UserController@addCompany']);
-
-//    $router->get('/user/companies', ['middleware' => ['auth:api'], function () use ($router) {
-//        $router->get('/', 'UserController@getCompany');
-//        $router->post('/', 'UserController@addCompany');
-//    }]);
-
 });
