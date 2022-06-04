@@ -1,13 +1,13 @@
 # Lumen PHP Framework
 
-###What needs to be done to launch the application
+##What needs to be done to launch the application
 - git clone git@github.com:bloodsiker/test_v_jet.git
 - git pull
 - composer install
 - php artisan migrate
 - php artisan db:seed
 
-###Endpoints:
+##Endpoints:
 - https://domain.com/api/user/register
   —method POST
   —fields: first_name [string], last_name [string], email [string], password [string], phone [string]
