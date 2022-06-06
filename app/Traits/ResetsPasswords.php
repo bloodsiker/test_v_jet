@@ -12,7 +12,8 @@ trait ResetsPasswords
      * Send a reset link to the given user.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *
+     * @return bool
      */
     public function postEmail(Request $request)
     {
@@ -29,9 +30,14 @@ trait ResetsPasswords
     {
         $broker = $this->getBroker();
 
-        $response = Password::broker($broker)->sendResetLink($request->only('email'), function (Message $message) {
-            $message->subject($this->getEmailSubject());
-        });
+//        $status = Password::sendResetLink(
+//            $request->only('email')
+//        );
+
+//        $response = Password::broker($broker)->sendResetLink($request->only('email'), function (Message $message) {
+//            $message->subject($this->getEmailSubject());
+//        });
+        $response = Password::broker($broker)->sendResetLink($request->only('email'));
 
         switch ($response) {
             case Password::RESET_LINK_SENT:

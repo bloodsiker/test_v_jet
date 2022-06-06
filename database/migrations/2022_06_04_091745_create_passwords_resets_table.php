@@ -13,7 +13,7 @@ class CreatePasswordsResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('passwords_resets', function (Blueprint $table) {
+        Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
             $table->string('email')->index();
             $table->string('token')->index();

@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var App\Routing\Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +20,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/user/register', 'UserController@register');
     $router->post('/user/sign-in', 'UserController@signIn');
-    $router->post('/user/recover-password', 'UserController@recoverPassword');
+    $router->match(['post', 'patch'], '/user/recover-password', 'UserController@recoverPassword');
 
     $router->get('/user/companies',  ['middleware' => 'auth:api', 'uses' => 'UserController@getCompanies']);
     $router->post('/user/companies',  ['middleware' => 'auth:api', 'uses' => 'UserController@addCompany']);

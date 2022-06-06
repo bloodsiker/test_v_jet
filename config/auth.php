@@ -2,28 +2,28 @@
 
 return [
     'defaults' => [
-        'guard' => 'api',
+        'guard'     => 'api',
         'passwords' => 'users',
     ],
 
     'guards' => [
         'api' => [
-            'driver' => 'jwt',
+            'driver'   => 'jwt',
             'provider' => 'users',
         ],
     ],
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model'  => App\Models\User::class,
         ],
     ],
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'email' => 'auth.emails.password',
-            'table' => 'password_resets',
-            'expire' => 60,
+            'email'    => 'mail.reset-password',
+            'table'    => 'password_resets',
+            'expire'   => 60,
         ],
     ]
 ];

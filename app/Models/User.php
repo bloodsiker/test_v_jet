@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\PasswordResetMessage;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -9,13 +10,15 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Lumen\Auth\Authorizable;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, HasFactory, CanResetPassword;
+    use Authenticatable, Authorizable, HasFactory, CanResetPassword, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -61,5 +64,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param string $token
+     *
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        Mail::to($this->email)->queue(new PasswordResetMessage($this, $token));
     }
 }
