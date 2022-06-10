@@ -6,6 +6,7 @@ use App\Http\Requests\CompanyStoreRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RecoverPasswordRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\Company;
 use App\Models\User;
 use App\Traits\ResetsPasswords;
@@ -76,6 +77,30 @@ class UserController extends Controller
             $response = [
                 'code' => 500,
                 'message' => 'Failed to send password reset link via email',
+            ];
+        }
+
+        return response()->json($response, $response['code']);
+    }
+
+    /**
+     * @param  ResetPasswordRequest  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $status = $this->reset($request);
+
+        if ($status) {
+            $response = [
+                'code' => 200,
+                'message' => 'You have successfully changed your password',
+            ];
+        } else {
+            $response = [
+                'code' => 500,
+                'message' => 'Failed to change password',
             ];
         }
 

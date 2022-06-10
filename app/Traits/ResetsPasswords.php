@@ -3,23 +3,11 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
-use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
 trait ResetsPasswords
 {
-    /**
-     * Send a reset link to the given user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return bool
-     */
-    public function postEmail(Request $request)
-    {
-        return $this->sendResetLinkEmail($request);
-    }
-
     /**
      * Send a reset link to the given user.
      *
@@ -30,13 +18,6 @@ trait ResetsPasswords
     {
         $broker = $this->getBroker();
 
-//        $status = Password::sendResetLink(
-//            $request->only('email')
-//        );
-
-//        $response = Password::broker($broker)->sendResetLink($request->only('email'), function (Message $message) {
-//            $message->subject($this->getEmailSubject());
-//        });
         $response = Password::broker($broker)->sendResetLink($request->only('email'));
 
         switch ($response) {
@@ -60,49 +41,14 @@ trait ResetsPasswords
     }
 
     /**
-     * Get the response for after the reset link has been successfully sent.
-     *
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getSendResetLinkEmailSuccessResponse($response)
-    {
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Get the response for after the reset link could not be sent.
-     *
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getSendResetLinkEmailFailureResponse($response)
-    {
-        return response()->json(['success' => false]);
-    }
-
-
-    /**
      * Reset the given user's password.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postReset(Request $request)
-    {
-        return $this->reset($request);
-    }
-
-    /**
-     * Reset the given user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
     public function reset(Request $request)
     {
-        $this->validate($request, $this->getResetValidationRules());
-
         $credentials = $request->only(
             'email', 'password', 'password_confirmation', 'token'
         );
@@ -110,30 +56,15 @@ trait ResetsPasswords
         $broker = $this->getBroker();
 
         $response = Password::broker($broker)->reset($credentials, function ($user, $password) {
-            $this->resetPassword($user, $password);
+            $this->passwordReset($user, $password);
         });
 
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return $this->getResetSuccessResponse($response);
-
+                return true;
             default:
-                return $this->getResetFailureResponse($request, $response);
+                return false;
         }
-    }
-
-    /**
-     * Get the password reset validation rules.
-     *
-     * @return array
-     */
-    protected function getResetValidationRules()
-    {
-        return [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
-        ];
     }
 
     /**
@@ -143,36 +74,13 @@ trait ResetsPasswords
      * @param  string  $password
      * @return void
      */
-    protected function resetPassword($user, $password)
+    protected function passwordReset($user, $password)
     {
-        $user->password = bcrypt($password);
+        $user->password = Hash::make($password);
 
         $user->save();
 
         return response()->json(['success' => true]);
-    }
-
-    /**
-     * Get the response for after a successful password reset.
-     *
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getResetSuccessResponse($response)
-    {
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Get the response for after a failing password reset.
-     *
-     * @param  Request  $request
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getResetFailureResponse(Request $request, $response)
-    {
-        return response()->json(['success' => false]);
     }
 
     /**
