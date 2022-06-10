@@ -35,7 +35,7 @@ class PasswordResetMessage extends Mailable
         $this->token = $token;
 
         $url = env('APP_URL');
-        $link = sprintf('%s/password-reset/%s/%s', $url, $user->email, $token);
+        $link = sprintf('%s/password-reset?token=%s', $url, $token);
         $this->subject = sprintf('%s Password Reset', env('APP_NAME'));
         $this->link = preg_replace('/([^:])(\/{2,})/', '$1/', $link);
     }
