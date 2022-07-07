@@ -1,68 +1,31 @@
-# Установка проекта
+# Lumen PHP Framework
 
-## Back-end
+### What needs to be done to launch the application
+- git clone git@github.com:bloodsiker/test_v_jet.git
+- git pull
+- composer install
+- php artisan migrate
+- php artisan db:seed
 
-1. Сбірка/запуск контейнерів
+### Endpoints:
+- https://domain.com/api/user/register
+  —method POST
+  —fields: first_name [string], last_name [string], email [string], password [string], phone [string]
 
-    ```bash
-    $ docker-compose build
-    $ docker-compose up -d
-    ```
+- https://domain.com/api/user/sign-in
+  — method POST
+  — fields: email [string], password [string]
 
-2. У корені проекту і в директорії /symfony і /processing - копіюємо файл .env і даємо нове ім'я .env.local де прописуємо свої параметри (хости, підключення до бази ...)
-3. Заходимо в контейнер mysql щоб створити потрібні нам бази даних і зробити дамп
+- https://domain.com/api/user/recover-password
+  — method POST/PATCH
+  — fields: email [string] // allow to update the password via email token
 
-    ```bash
-    $ docker-compose exec mysql bash
-    ```
+- https://domain.com/api/user/companies
+  — method GET
+  — fields: title [string], phone [string], description [string]
+  — show the companies, associated with the user (by the relation)
 
-4. Налаштовуємо процесинг, йдемо в директорію /processing і виконуємо composer install. Щоб перевірити, чи працює процесинг, переходимо за адресою http://localhost:82/admin/login
-
-5. Перевіряємо адмінку http://localhost:81/a5dm/
-6. Перевіряємо основний сайт http://localhost
-
-### Корисні команди
-
-```bash
-# bash commands
-$ docker-compose exec php-www bash
-# Composer (e.g. composer update)
-$ docker-compose exec php-www composer update
-# SF commands (Tips: there is an alias inside php container)
-$ docker-compose exec php-www php /var/www/symfony/bin/console cache:clear
-# Same command by using alias
-$ docker-compose exec php-www bash
-$ sf cache:clear
-# Retrieve an IP Address (here for the nginx container)
-$ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
-$ docker inspect $(docker ps -f name=nginx -q) | grep IPAddress
-# MySQL commands
-$ docker-compose exec mysql mysql -uroot -p"root"
-# F***ing cache/logs folder
-$ sudo chmod -R 777 var/cache var/logs
-# Check CPU consumption
-$ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
-# Delete all containers
-$ docker rm $(docker ps -aq)
-# Delete all images
-$ docker rmi $(docker images -q)
-```
-
-
-## Front-end
-
-**cd symfony** - всі дії виконуємо в директорії "symfony"
-
-**npm install** - встановити всі необхідні пакети  
-**npm ci** - перевстановити пакети, чисте інсталювання (при необхідності)
-
-**npm run dev** - запуск дев версії  
-**npm run build** - збірка проекту для продакшену  
-**npm run analyze** - візуальний аналіз продакшн збірки  
-**npm run lint** - лінтінг js
-
-**/symfony/public/build** - директорія куди відбудеться білд проекту
-
-## за потреби
-**rm -rf ./node_modules** - видаляємо node modules  
-**rm -rf ./public/build** - видаляємо білд проекту  
+- https://domain.com/api/user/companies
+  — method POST
+  — fields: title [string], phone [string], description [string]
+  — add the companies, associated with the user (by the relation)
